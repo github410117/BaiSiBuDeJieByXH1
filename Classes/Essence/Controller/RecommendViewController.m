@@ -59,7 +59,7 @@ static NSString *const Identifier = @"mycell";
     self.tableView.mj_header.automaticallyChangeAlpha = YES;
     [self.tableView.mj_header beginRefreshing];
     //上拉刷新
-    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(topRefreshData)];
+    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(topRefresh)];
 }
 
 - (void)downRefresh {
@@ -77,7 +77,25 @@ static NSString *const Identifier = @"mycell";
     
 }
 
-
+/**
+ *  上拉加载
+ */
+- (void)topRefresh {
+    NSInteger page = _page ++;
+    [ParsingData getDataWithMaxTime:_maxtime page:@(page) titleType:TypeVideo parameter:@"list" block:^(id json, id param) {
+        NSMutableArray *newArray = [NSMutableArray array];
+        for (DataModel *model in json) {
+            DataFrame *frame = [[DataFrame alloc] init];
+            frame.model = model;
+            [newArray addObject:frame];
+        }
+        [self.dataArray addObjectsFromArray:newArray];
+        [self.tableView reloadData];
+        self.page = page;
+        self.maxtime = param;
+        [self.tableView.mj_footer endRefreshing];
+    }];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -87,12 +105,12 @@ static NSString *const Identifier = @"mycell";
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Incomplete implementation, return the number of sections
+
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete implementation, return the number of rows
+
     return _dataArray.count;
 }
 

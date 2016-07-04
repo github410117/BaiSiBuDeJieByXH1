@@ -21,4 +21,14 @@ typedef void(^RecommendBlock)(id json,id param);
  */
 + (void)getDataType:(TitleType)type parameter:(NSString *)parameter block:(RecommendBlock)block;
 
+/**
+ *  上拉刷新
+ *  @param maxtime   参数
+ *  @param page      页码
+ *  @param type      类型
+ *  @param parameter 参数
+ *  @param block     回调
+ */
++ (void)getDataWithMaxTime:(NSString *)maxtime page:(NSNumber *)page titleType:(TitleType)type parameter:(NSString *)parameter block:(RecommendBlock)block;
+
 @end

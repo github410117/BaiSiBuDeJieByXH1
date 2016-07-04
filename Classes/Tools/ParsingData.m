@@ -29,4 +29,23 @@
     }];
 }
 
+
++ (void)getDataWithMaxTime:(NSString *)maxtime page:(NSNumber *)page titleType:(TitleType)type parameter:(NSString *)parameter block:(RecommendBlock)block {
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
+    
+    params[@"a"] = parameter;
+    params[@"c"] = @"data";
+    params[@"type"] = @(type);
+    params[@"page"] = page;
+    params[@"maxtime"] = maxtime;
+    
+    [HttpTool get:APIUrl parameters:params success:^(id json) {
+        NSArray *array = [DataModel mj_objectArrayWithKeyValuesArray:json[@"list"]];
+        NSString *maxtime = json[@"info"][@"maxtime"];
+        block(array,maxtime);
+    } failure:^(NSError *error) {
+        NSLog(@"请求失败");
+    }];
+}
+
 @end

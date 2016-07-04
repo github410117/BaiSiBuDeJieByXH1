@@ -19,6 +19,11 @@ static NSString *const Identifier = @"mycell";
 @interface VideoViewController ()
 @property (nonatomic, copy) NSMutableArray *dataArray;
 @property (nonatomic, strong) KRVideoPlayerController *videoController;
+
+// 当前页码
+@property (nonatomic, assign) NSInteger page;
+// 当加载下一页数据时需要的参数
+@property (nonatomic, copy) NSString *maxtime;
 @end
 
 @implementation VideoViewController
@@ -59,10 +64,15 @@ static NSString *const Identifier = @"mycell";
     self.tableView.mj_header.automaticallyChangeAlpha = YES;
     [self.tableView.mj_header beginRefreshing];
     //上拉刷新
-    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(topRefreshData)];
+    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingTarget:self refreshingAction:@selector(topRefresh)];
 }
 
+/**
+ *  下拉刷新
+ */
 - (void)downRefresh {
+    self.page = 0;
+    [self.dataArray removeAllObjects];
     NSString *par = @"list";
     [ParsingData getDataType:TypeVideo parameter:par block:^(id json, id param) {
         for (DataModel *model in json) {
@@ -70,11 +80,31 @@ static NSString *const Identifier = @"mycell";
             frame.model = model;
             [self.dataArray addObject:frame];
         }
-//        self.dataArray = [DataModel mj_objectArrayWithKeyValuesArray:json];
+        _maxtime = param;
         [self.tableView reloadData];
         [self.tableView.mj_header endRefreshing];
     }];
     
+}
+
+/**
+ *  上拉加载
+ */
+- (void)topRefresh {
+    NSInteger page = _page ++;
+    [ParsingData getDataWithMaxTime:_maxtime page:@(page) titleType:TypeVideo parameter:@"list" block:^(id json, id param) {
+        NSMutableArray *newArray = [NSMutableArray array];
+        for (DataModel *model in json) {
+            DataFrame *frame = [[DataFrame alloc] init];
+            frame.model = model;
+            [newArray addObject:frame];
+        }
+        [self.dataArray addObjectsFromArray:newArray];
+        [self.tableView reloadData];
+        self.page = page;
+        self.maxtime = param;
+        [self.tableView.mj_footer endRefreshing];
+    }];
 }
 
 
@@ -87,12 +117,12 @@ static NSString *const Identifier = @"mycell";
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Incomplete implementation, return the number of sections
+
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete implementation, return the number of rows
+
     return _dataArray.count;
 }
 
