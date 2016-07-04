@@ -85,7 +85,7 @@ static NSString *const Identifier = @"mycell";
  */
 - (void)topRefresh {
     NSInteger page = _page ++;
-    [ParsingData getDataWithMaxTime:_maxtime page:@(page) titleType:TypeVideo parameter:@"list" block:^(id json, id param) {
+    [ParsingData getDataWithMaxTime:_maxtime page:@(page) titleType:TypeImage parameter:@"list" block:^(id json, id param) {
         NSMutableArray *newArray = [NSMutableArray array];
         for (DataModel *model in json) {
             DataFrame *frame = [[DataFrame alloc] init];
