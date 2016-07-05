@@ -86,4 +86,10 @@
     }
     self.videoController.contentURL = url;
 }
+
+//停止视频的播放
+- (void)reset {
+    [self.videoController dismiss];
+    self.videoController = nil;
+}
 @end

@@ -36,7 +36,12 @@
 
 @implementation myContentCell
 
-
+//防止重用和视频出屏关闭
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    [_myVideoView reset];
+    
+}
 
 - (void)setDataFrame:(DataFrame *)dataFrame {
     _dataFrame = dataFrame;
@@ -45,10 +50,10 @@
     self.userName.text = model.name;
     self.releaseTime.text = model.created_at;
     self.content.text = model.text;
-    [self.zan setTitle:[NSString stringWithFormat:@"%ld",model.ding] forState:UIControlStateNormal];
-    [self.cai setTitle:[NSString stringWithFormat:@"%ld",model.cai] forState:UIControlStateNormal];
-    [self.share setTitle:[NSString stringWithFormat:@"%ld",model.repost] forState:UIControlStateNormal];
-    [self.comment setTitle:[NSString stringWithFormat:@"%ld",model.comment] forState:UIControlStateNormal];
+    [self.zan setTitle:[NSString stringWithFormat:@"%ld",(long)model.ding] forState:UIControlStateNormal];
+    [self.cai setTitle:[NSString stringWithFormat:@"%ld",(long)model.cai] forState:UIControlStateNormal];
+    [self.share setTitle:[NSString stringWithFormat:@"%ld",(long)model.repost] forState:UIControlStateNormal];
+    [self.comment setTitle:[NSString stringWithFormat:@"%ld",(long)model.comment] forState:UIControlStateNormal];
     //热评
     if (model.cmtModel) {
         self.hotCommentView.hidden = NO;

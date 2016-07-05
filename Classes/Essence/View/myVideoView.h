@@ -13,4 +13,5 @@
 @property (nonatomic, strong) DataModel *allModel;
 
 + (instancetype)videoView;
+- (void)reset;
 @end

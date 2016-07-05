@@ -155,6 +155,13 @@ static NSString *const Identifier = @"mycell";
     self.videoController.contentURL = url;
 }
 
+
+
+- (void)reset {
+    [self.videoController dismiss];
+    self.videoController = nil;
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
